@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Blog Application</h1>
+            <p>Share your thoughts with the world</p>
+        </header>
+        <section class="create-post-section">
+            <h2>Create New Post</h2>
+            <form action="/posts" method="POST" class="post-form">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="author">Author:</label>
+                    <input type="text" id="author" name="author" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Tech">Tech</option>
+                        <option value="Lifestyle">Lifestyle</option>
+                        <option value="Education">Education</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Content:</label>
+                    <textarea id="content" name="content" rows="6" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary">Create Post</button>
+            </form>
+        </section>
+        <section class="filter-section">
+            <h2>All Blog Posts</h2>
+            <form method="GET" class="filter-form">
+                <label for="category-filter">Filter by Category:</label>
+                <select id="category-filter" name="category" onchange="this.form.submit()">
+                    <% categories.forEach(cat => { %>
+                        <option value="<%= cat %>" <% if (selectedCategory === cat) { %>selected<% } %>>
+                            <%= cat %>
+                        </option>
+                    <% }); %>
+                </select>
+            </form>
+        </section>
+        <section class="posts-section">
+            <% if (posts.length === 0) { %>
+                <div class="no-posts">
+                    <p>No posts found for the selected category.</p>
+                </div>
+            <% } else { %>
+                <% posts.forEach(post => { %>
+                    <article class="post">
+                        <div class="post-header">
+                            <h3><%= post.title %></h3>
+                            <div class="post-meta">
+                                <span class="author">By <%= post.author %></span>
+                                <span class="category <%= post.category.toLowerCase() %>"><%= post.category %></span>
+                                <span class="date"><%= post.timestamp %></span>
+                            </div>
+                        </div>
+                        
+                        <div class="post-content">
+                            <p><%= post.content %></p>
+                        </div>
+                        
+                        <div class="post-actions">
+                            <a href="/edit/<%= post.id %>" class="btn-edit">Edit</a>
+                            <form method="POST" action="/delete/<%= post.id %>" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this post?')">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </div>
+                    </article>
+                <% }); %>
+            <% } %>
+        </section>
+    </div>
+</body>
+</html>
